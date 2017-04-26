@@ -1,6 +1,6 @@
 [submodule "src/moxie"]
 	path = src/moxie
-	url = git@bitbucket.org:scalefactor/moxie.git
+	url = https://github.com/ScaleFactor/moxie.git
 [submodule "tests/js/testrunner"]
 	path = tests/js/testrunner
 	url = https://github.com/moxiecode/testrunner.git
