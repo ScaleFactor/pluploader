@@ -74,7 +74,7 @@ task("mkjs", [], function (i18n) {
 	
 
 	// Copy compiled moxie files
-	tools.copySync(moxieDir + "/bin/flash/Moxie.swf", "js/Moxie.swf");
+	// tools.copySync(moxieDir + "/bin/flash/Moxie.swf", "js/Moxie.swf");
 	tools.copySync(moxieDir + "/bin/silverlight/Moxie.xap", "js/Moxie.xap");
 	tools.copySync(moxieDir + "/bin/js/moxie.min.js", "js/moxie.min.js");
 	tools.copySync(moxieDir + "/bin/js/moxie.js", "js/moxie.js");
