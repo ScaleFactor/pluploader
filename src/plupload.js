@@ -1473,6 +1473,8 @@ plupload.Uploader = function(settings) {
 						file.name = fileName;
 					}
 					
+					file.name = file.name.replace(/,/gm, '')
+					
 					queue.push(function(cb) {
 						// run through the internal and user-defined filters, if any
 						filterFile(file, function(err) {
