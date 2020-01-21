@@ -1473,7 +1473,10 @@ plupload.Uploader = function(settings) {
 						file.name = fileName;
 					}
 					
-					file.name = file.name.replace(/,/gm, '')
+// 					// The below should replace all chars with potential issues from here:
+					// https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
+					// It will not handle emojis and other weirdness, but I really hope that won't happen...
+					file.name = file.name.replace(/[&$@=;:+,?\\{^}%`\]>\["~'<#|]/g, '').replace(/\s/g, '_')
 					
 					queue.push(function(cb) {
 						// run through the internal and user-defined filters, if any
