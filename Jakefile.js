@@ -3,6 +3,7 @@
 var fs = require('fs');
 var path = require('path');
 var exec = require('child_process').exec;
+var uglifyjs = require('uglify-js');
 
 var tools = require('./src/moxie/build/tools');
 var utils = require('./src/moxie/build/utils');
@@ -74,7 +75,7 @@ task("mkjs", [], function (i18n) {
 	
 
 	// Copy compiled moxie files
-	// tools.copySync(moxieDir + "/bin/flash/Moxie.swf", "js/Moxie.swf");
+	tools.copySync(moxieDir + "/bin/flash/Moxie.swf", "js/Moxie.swf");
 	tools.copySync(moxieDir + "/bin/silverlight/Moxie.xap", "js/Moxie.xap");
 	tools.copySync(moxieDir + "/bin/js/moxie.min.js", "js/moxie.min.js");
 	tools.copySync(moxieDir + "/bin/js/moxie.js", "js/moxie.js");
@@ -82,27 +83,37 @@ task("mkjs", [], function (i18n) {
 	// Copy UI Plupload
 	jake.cpR("./src/jquery.ui.plupload", targetDir + "/jquery.ui.plupload", {});
 
-	uglify([
-		'jquery.ui.plupload.js'
-	], targetDir + "/jquery.ui.plupload/jquery.ui.plupload.min.js", {
-		sourceBase: targetDir + "/jquery.ui.plupload/"
-	});
+	// uglify([
+	// 	'jquery.ui.plupload.js'
+	// ], targetDir + "/jquery.ui.plupload/jquery.ui.plupload.min.js", {
+	// 	sourceBase: targetDir + "/jquery.ui.plupload/"
+	// });
+	var jqueryMinified = uglifyjs.minify(targetDir + "/jquery.ui.plupload/jquery.ui.plupload.js", {mangle: true});
+	fs.writeFileSync(targetDir + "/jquery.ui.plupload/jquery.ui.plupload.min.js", jqueryMinified.code);
 
 	// Copy Queue Plupload
 	jake.cpR("./src/jquery.plupload.queue", targetDir + "/jquery.plupload.queue", {});
 
-	uglify([
-		'jquery.plupload.queue.js'
-	], targetDir + "/jquery.plupload.queue/jquery.plupload.queue.min.js", {
-		sourceBase: targetDir + "/jquery.plupload.queue/"
-	});
+	// uglify([
+	// 	'jquery.plupload.queue.js'
+	// ], targetDir + "/jquery.plupload.queue/jquery.plupload.queue.min.js", {
+	// 	sourceBase: targetDir + "/jquery.plupload.queue/"
+	// });
+	var queueMinified = uglifyjs.minify(targetDir + "/jquery.plupload.queue/jquery.plupload.queue.js", {mangle: true});
+	fs.writeFileSync(targetDir + "/jquery.plupload.queue/jquery.plupload.queue.min.js", queueMinified.code);
+
 
 	// Minify Plupload and combine with mOxie
-	uglify([
-		'plupload.js'
-	], targetDir + "/plupload.min.js", {
-		sourceBase: 'src/'
-	});
+	// uglify([
+	// 	'plupload.js'
+	// ], targetDir + "/plupload.min.js", {
+	// 	sourceBase: 'src/'
+	// });
+	var pluploadMinified = uglifyjs.minify("src/plupload.js", {mangle: true});
+	fs.writeFileSync(targetDir + "/plupload.min.js", pluploadMinified.code);
+
+	var moxieMinified = uglifyjs.minify(targetDir + "/moxie.js", {mangle: true});
+	fs.writeFileSync(targetDir + "/moxie.min.js", moxieMinified.code);
 
 	var info = require("./package.json");
 	info.copyright = copyright;
@@ -116,6 +127,7 @@ task("mkjs", [], function (i18n) {
 	fs.writeFileSync(targetDir + "/plupload.full.min.js", code);
 
 	// Add I18n files
+	i18n = true;
 	if (i18n) {
 		process.env.auth = "moxieuser:12345";
 		process.env.to = "./js/i18n";
